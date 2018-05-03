@@ -1,6 +1,6 @@
 # Security PSR-15 middlewares 
 
-This library provides a collection of [PSR-15](https://www.php-fig.org/psr/psr-15/) middlewares to manage HTTP security. 
+This library provides a collection of [PSR-15](https://www.php-fig.org/psr/psr-15/) middleware to manage HTTP security. 
 
 
 ## The collection includes
