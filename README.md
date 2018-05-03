@@ -2,10 +2,8 @@
 
 This library provides a collection of [PSR-15](https://www.php-fig.org/psr/psr-15/) middlewares to manage HTTP security. 
 
-:speech_balloon: This library is extracted from the now deprecated [codeinc/psr15-middlewares](https://packagist.org/packages/codeinc/psr15-middlewares) package.
 
-
-## The current collection includes
+## The collection includes
 
 * [`ContentSecurityPolicyMiddleware`](src/ContentSecurityPolicyMiddleware.php) Adds a [`Content-Security-Policy`](https://developer.mozilla.org/docs/Web/HTTP/Headers/Content-Security-Policy) HTTP headers to the response
 * [`ContentTypeOptionsMiddleware`](src/ContentTypeOptionsMiddleware.php) Adds a [`X-Content-Type-Options`](https://developer.mozilla.org/docs/Web/HTTP/Headers/X-Content-Type-Options) HTTP headers to the response
@@ -23,6 +21,8 @@ This library is available through [Packagist](https://packagist.org/packages/cod
 ```bash
 composer require codeinc/security-middleware
 ```
+
+:speech_balloon: This library is extracted from the now deprecated [codeinc/psr15-middlewares](https://packagist.org/packages/codeinc/psr15-middlewares) package.
 
 ## License
 
