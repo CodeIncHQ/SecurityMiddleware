@@ -21,11 +21,11 @@
 //
 declare(strict_types=1);
 namespace CodeInc\SecurityMiddleware\Tests;
+use CodeInc\SecurityMiddleware\Assets\UnsecureResponse;
 use CodeInc\SecurityMiddleware\BlockUnsecureRequestsMiddleware;
 use CodeInc\SecurityMiddleware\Tests\Assets\BlankResponse;
 use CodeInc\SecurityMiddleware\Tests\Assets\FakeRequestHandler;
 use CodeInc\SecurityMiddleware\Tests\Assets\FakeServerRequest;
-use CodeInc\Psr7Responses\ForbiddenResponse;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 
@@ -41,7 +41,7 @@ class BlockUnsecureRequestsMiddlewareTest extends TestCase
 {
     public function testSecureRequest():void
     {
-        $middleware = new BlockUnsecureRequestsMiddleware(new ForbiddenResponse());
+        $middleware = new BlockUnsecureRequestsMiddleware();
         $response = $middleware->process(
             FakeServerRequest::getSecureServerRequest(),
             new FakeRequestHandler(new BlankResponse())
@@ -50,15 +50,20 @@ class BlockUnsecureRequestsMiddlewareTest extends TestCase
         $this->assertInstanceOf(BlankResponse::class, $response);
     }
 
-
     public function testUnsecureRequest():void
     {
-        $middleware = new BlockUnsecureRequestsMiddleware(new ForbiddenResponse());
+        $middleware = new BlockUnsecureRequestsMiddleware();
         $response = $middleware->process(
             FakeServerRequest::getUnsecureServerRequest(),
             new FakeRequestHandler(new BlankResponse())
         );
         $this->assertInstanceOf(ResponseInterface::class, $response);
-        $this->assertInstanceOf(ForbiddenResponse::class, $response);
+        $this->assertInstanceOf(UnsecureResponse::class, $response);
+    }
+
+    public function testSecureRequestCheck():void
+    {
+        $this->assertTrue(BlockUnsecureRequestsMiddleware::isRequestSecure(FakeServerRequest::getSecureServerRequest()));
+        $this->assertFalse(BlockUnsecureRequestsMiddleware::isRequestSecure(FakeServerRequest::getUnsecureServerRequest()));
     }
 }
