@@ -21,8 +21,8 @@
 //
 declare(strict_types=1);
 namespace CodeInc\SecurityMiddleware;
+use CodeInc\SecurityMiddleware\Assets\UnsecureResponse;
 use CodeInc\SecurityMiddleware\Tests\BlockUnsecureRequestsMiddlewareTest;
-use CodeInc\Psr7Responses\ForbiddenResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -34,6 +34,7 @@ use Psr\Http\Server\RequestHandlerInterface;
  *
  * @see BlockUnsecureRequestsMiddlewareTest
  * @package CodeInc\SecurityMiddleware
+ * @uses UnsecureResponse
  * @author Joan Fabrégat <joan@codeinc.fr>
  * @license MIT <https://github.com/CodeIncHQ/SecurityMiddleware/blob/master/LICENSE>
  * @link https://github.com/CodeIncHQ/SecurityMiddleware
@@ -41,39 +42,41 @@ use Psr\Http\Server\RequestHandlerInterface;
 class BlockUnsecureRequestsMiddleware implements MiddlewareInterface
 {
     /**
+     * Object returned for unsecure requests.
+     *
      * @var ResponseInterface
      */
     private $unsecureResponse;
 
-
     /**
-     * BlockHttpRequestsMiddleware constructor.
+     * BlockUnsecureRequestsMiddleware constructor.
      *
-     * @param null|ResponseInterface $blockedResponse
+     * @param null|ResponseInterface $unsecureResponse
      */
-    public function __construct(?ResponseInterface $blockedResponse = null)
+    public function __construct(?ResponseInterface $unsecureResponse = null)
     {
-        $this->unsecureResponse  = $blockedResponse ?? new ForbiddenResponse();
+        $this->unsecureResponse  = $unsecureResponse ?? new UnsecureResponse();
     }
 
-
     /**
-     * @return ForbiddenResponse|null|ResponseInterface
-     */
-    public function getUnsecureResponse()
-    {
-        return $this->unsecureResponse;
-    }
-
-
-    /**
+     * Sets the object returned for unsecure requests.
+     *
      * @param ResponseInterface $unsecureResponse
      */
-    public function setUnsecureResponse($unsecureResponse):void
+    public function setUnsecureResponse(ResponseInterface $unsecureResponse):void
     {
         $this->unsecureResponse = $unsecureResponse;
     }
 
+    /**
+     * Returns the object returned for unsecure requests.
+     *
+     * @return ResponseInterface
+     */
+    public function getUnsecureResponse():ResponseInterface
+    {
+        return new $this->unsecureResponse;
+    }
 
     /**
      * @inheritdoc
@@ -84,10 +87,21 @@ class BlockUnsecureRequestsMiddleware implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler):ResponseInterface
     {
         // blocks HTTP requests
-        if ($request->getUri()->getScheme() != 'https') {
-            return $this->unsecureResponse;
+        if (!self::isRequestSecure($request)) {
+            return $this->getUnsecureResponse();
         }
 
         return $handler->handle($request);
+    }
+
+    /**
+     * Checks if a request is secure.
+     *
+     * @param ServerRequestInterface $request
+     * @return bool
+     */
+    public static function isRequestSecure(ServerRequestInterface $request):bool
+    {
+        return $request->getUri()->getScheme() == 'https';
     }
 }
