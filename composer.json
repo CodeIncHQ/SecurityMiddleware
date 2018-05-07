@@ -1,6 +1,6 @@
 {
   "name": "codeinc/security-middleware",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "A collection of PSR-15 middleware to manage HTTP security",
   "homepage": "https://github.com/CodeIncHQ/SecurityMiddleware",
   "type": "library",

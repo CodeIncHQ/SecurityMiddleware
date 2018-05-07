@@ -38,8 +38,9 @@ class ContentSecurityPolicyMiddleware extends AbstractHttpHeaderMiddleware
 {
 	public const SRC_SELF  = '\'self\'';
 	public const SRC_NONE  = '\'none\'';
+    public const SRC_UNSAFE_INLINE = '\'unsafe-inline\'';
 
-	// values for the referer policy
+    // values for the referer policy
 	public const REFERER_POLICY_NONE = 'none';
 	public const REFERER_POLICY_NO_REFERRER = 'no-referrer';
 	public const REFERER_POLICY_NONE_WHEN_DOWNGRADE = 'none-when-downgrade';
